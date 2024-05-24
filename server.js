@@ -11,8 +11,9 @@ const CSV_DIRECTORY = 'E:/MyData/';
 // Enable CORS for all routes
 app.use(cors());
 
+
 app.get('/csv-data', (req, res) => {
-  const csvData = [];
+  const csvFiles = [];
 
   fs.readdir(CSV_DIRECTORY, (err, files) => {
     if (err) {
@@ -20,17 +21,25 @@ app.get('/csv-data', (req, res) => {
     }
 
     files.forEach((file) => {
-      if (file.endsWith('.csv')) {
+      const fileNameWithoutExtension = file.split('.').slice(0, -1).join('.'); // Remove extension
+      const fileNameLower = file.toLowerCase();
+      if (fileNameLower.endsWith('.csv')) {
         const filePath = CSV_DIRECTORY + file;
-        const fileContent = fs.readFileSync(filePath, 'utf8');
-        const parsedData = Papa.parse(fileContent, { header: true }).data;
-        csvData.push(...parsedData);
+        try {
+          const fileContent = fs.readFileSync(filePath, 'utf8');
+          const parsedData = Papa.parse(fileContent, { header: true }).data;
+          csvFiles.push({ fileName: fileNameWithoutExtension, data: parsedData });
+        } catch (err) {
+          console.error('Error reading or parsing file:', filePath, err);
+        }
       }
     });
 
-    res.json(csvData);
+    res.json(csvFiles);
   });
 });
+
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
