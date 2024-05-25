@@ -6,7 +6,7 @@ const Papa = require('papaparse');
 
 const app = express();
 const PORT = 3001;
-let CSV_DIRECTORY = '';
+const CSV_DIRECTORY = 'E:/MyData/';
 
 app.use(cors());
 app.use(express.json());
