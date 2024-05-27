@@ -11,6 +11,8 @@ let CSV_DIRECTORY = '';
 app.use(cors());
 app.use(express.json());
 
+let serverActive = true; // Initial server connection status set to true
+
 app.post('/set-directory', (req, res) => {
   const { directory } = req.body;
   CSV_DIRECTORY = directory;
@@ -65,6 +67,11 @@ app.get('/csv-data', (req, res) => {
 
     res.json(csvFiles);
   });
+});
+
+// New API endpoint to send server connection status
+app.get('/server-active', (req, res) => {
+  res.json({ serverActive });
 });
 
 app.listen(PORT, () => {
